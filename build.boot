@@ -16,31 +16,35 @@
                     [org.clojure/core.async "0.3.443"]
                     [com.taoensso/timbre    "4.10.0"]
                     [djy                    "0.1.4"]
-                    [clj_manifest           "0.2.0"]])
+                    [clj_manifest           "0.2.0"]]
+  :repositories (conj (get-env :repositories)
+                  ["clojars" {:url "https://clojars.org/repo/"
+                              :username (System/getenv "CLOJARS_USER")
+                              :password (System/getenv "CLOJARS_PASS")}]))
 
 (require '[adzerk.bootlaces :refer :all]
          '[adzerk.boot-test :refer :all])
 
-(def ^:const +version+ "0.3.10")
+(def ^:const +version+ "0.3.10-1")
 
 (bootlaces! +version+)
 
 (task-options!
-  pom     {:project 'alda/core
+  pom     {:project 'org.clojars.oakes/alda-core
            :version +version+
            :description "The core machinery of Alda"
-           :url "https://github.com/alda-lang/alda-core"
-           :scm {:url "https://github.com/alda-lang/alda-core"}
+           :url "https://github.com/oakes/alda-core"
+           :scm {:url "https://github.com/oakes/alda-core"}
            :license {"name" "Eclipse Public License"
                      "url" "http://www.eclipse.org/legal/epl-v10.html"}}
 
   jar     {:file "alda-core.jar"}
 
-  install {:pom "alda/core"}
-
   target  {:dir #{"target"}}
 
-  test    {:include #"-test$"})
+  test    {:include #"-test$"}
+
+  push    {:repo "clojars"})
 
 ;; This task is a work in progress.
 ;;
@@ -69,8 +73,9 @@
   (comp (pom)
         (jar)))
 
-(deftask deploy
-  "Builds jar file, installs it to local Maven repo, and deploys it to Clojars."
-  []
-  (comp (package) (install) (push-release)))
+(deftask local []
+  (comp (package) (install)))
+
+(deftask deploy []
+  (comp (package) (push)))
 
