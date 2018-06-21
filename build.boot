@@ -16,7 +16,6 @@
                     [org.clojure/core.async "0.3.443"]
                     [com.taoensso/timbre    "4.10.0"]
                     [djy                    "0.1.4"]
-                    [potemkin               "0.4.4"]
                     [clj_manifest           "0.2.0"]])
 
 (require '[adzerk.bootlaces :refer :all]
